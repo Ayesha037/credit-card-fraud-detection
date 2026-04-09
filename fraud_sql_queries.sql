@@ -1,21 +1,3 @@
--- =====================================================
--- CREDIT CARD FRAUD DETECTION - SQL ANALYSIS
--- American Express Fraud Prevention Project
--- =====================================================
-
--- SETUP: First, create table and load your creditcard.csv
--- For SQLite:
--- sqlite3 fraud_detection.db
--- .mode csv
--- .import creditcard.csv transactions
-
--- For MySQL/PostgreSQL, use LOAD DATA INFILE or COPY command
-
--- =====================================================
--- QUERY 1: Overall Fraud Statistics
--- Business Question: What's our baseline fraud rate?
--- =====================================================
-
 SELECT 
     COUNT(*) AS total_transactions,
     SUM(CASE WHEN Class = 1 THEN 1 ELSE 0 END) AS fraud_transactions,
@@ -27,13 +9,7 @@ SELECT
     ROUND(AVG(CASE WHEN Class = 0 THEN Amount END), 2) AS avg_legitimate_amount
 FROM transactions;
 
--- Expected Output: ~0.17% fraud rate, fraud amounts typically higher
 
-
--- =====================================================
--- QUERY 2: Fraud by Transaction Amount Buckets
--- Business Question: Which amount ranges are most vulnerable?
--- =====================================================
 
 SELECT 
     CASE 
@@ -52,13 +28,6 @@ FROM transactions
 GROUP BY amount_bucket
 ORDER BY amount_bucket;
 
--- Expected Insight: Small transactions test stolen cards, large ones maximize profit
-
-
--- =====================================================
--- QUERY 3: Fraud Patterns by Time of Day
--- Business Question: When does fraud spike?
--- =====================================================
 
 SELECT 
     CASE 
@@ -75,13 +44,6 @@ FROM transactions
 GROUP BY time_period
 ORDER BY time_period;
 
--- Expected Insight: Night transactions have higher fraud rates
-
-
--- =====================================================
--- QUERY 4: Top 20 Suspicious Transaction Patterns
--- Business Question: What are the highest-risk transactions?
--- =====================================================
 
 SELECT 
     Amount,
@@ -98,13 +60,6 @@ WHERE Class = 1
 ORDER BY Amount DESC
 LIMIT 20;
 
--- Shows highest-value fraud cases for investigation
-
-
--- =====================================================
--- QUERY 5: Fraud Distribution by Amount Percentiles
--- Business Question: What's the distribution pattern?
--- =====================================================
 
 WITH amount_stats AS (
     SELECT 
@@ -119,13 +74,6 @@ WITH amount_stats AS (
 )
 SELECT * FROM amount_stats;
 
--- Shows clear difference in fraud vs legitimate spending patterns
-
-
--- =====================================================
--- QUERY 6: Hourly Fraud Trends
--- Business Question: Precise hour-by-hour fraud analysis
--- =====================================================
 
 SELECT 
     CAST((Time % 86400) / 3600 AS INTEGER) AS hour_of_day,
@@ -137,13 +85,7 @@ FROM transactions
 GROUP BY hour_of_day
 ORDER BY hour_of_day;
 
--- Identifies specific hours for enhanced monitoring
 
-
--- =====================================================
--- QUERY 7: High-Value Fraud Detection
--- Business Question: Where are we losing the most money?
--- =====================================================
 
 SELECT 
     'High Value Fraud (>$500)' AS category,
@@ -176,13 +118,6 @@ SELECT
 FROM transactions
 WHERE Class = 1 AND Amount < 100;
 
--- Segments fraud by value for targeted prevention
-
-
--- =====================================================
--- QUERY 8: Fraud Velocity Analysis
--- Business Question: Are there rapid-fire fraud attempts?
--- =====================================================
 
 WITH time_diffs AS (
     SELECT 
@@ -215,18 +150,3 @@ ORDER BY
         WHEN '15-60 minutes' THEN 4
         ELSE 5
     END;
-
--- Identifies burst patterns in fraudulent activity
-
-
--- =====================================================
--- INTERVIEW TALKING POINTS:
--- =====================================================
--- 1. "I analyzed 284K transactions and found 0.17% fraud rate"
--- 2. "Fraud amounts average $122 vs $88 for legitimate (40% higher)"
--- 3. "Night hours (12AM-6AM) show 2x higher fraud rates"
--- 4. "80% of fraud tests with small amounts first (<$100)"
--- 5. "High-value fraud (>$500) represents only 15% of cases but 60% of losses"
---
--- These insights drive our ML model and real-time alerting strategy
--- =====================================================
