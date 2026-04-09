@@ -28,27 +28,6 @@ print("\n")
 
 print("STEP 1: BUSINESS UNDERSTANDING")
 print("-" * 70)
-print("""
-BUSINESS PROBLEM:
-Credit card fraud costs card issuers $28 billion annually worldwide.
-For American Express:
-- Each fraud incident costs avg $500 in chargebacks
-- Customer trust erosion leads to 40% churn rate after fraud
-- False positives (blocking legitimate transactions) frustrate customers
-- Real-time detection required (<200ms decision time)
-
-OBJECTIVES:
-1. Identify fraudulent transactions with 90%+ recall
-2. Minimize false positives to maintain customer experience
-3. Quantify business impact (ROI in $ saved)
-4. Build explainable model for regulatory compliance
-
-SUCCESS METRICS:
-- Recall > 90% (catch 9 out of 10 frauds)
-- Precision 10-20% (acceptable false positive rate)
-- Model inference time < 50ms
-- Annual savings > $400M at AmEx scale
-""")
 print("\n")
 
 print("STEP 2: DATA LOADING & INITIAL EXPLORATION")
@@ -78,13 +57,6 @@ print(f"  Legitimate (0): {class_dist[0]:,} ({100-fraud_pct:.2f}%)")
 print(f"  Fraud (1):      {class_dist[1]:,} ({fraud_pct:.4f}%)")
 print(f"\nImbalance Ratio: 1:{int(class_dist[0]/class_dist[1])}")
 
-print(f"""
-WHY CLASS IMBALANCE MATTERS:
-- A model predicting "all legitimate" would be 99.83% accurate but useless!
-- Traditional accuracy is misleading - we need Recall & Precision
-- Must use techniques like SMOTE, class weights, or undersampling
-- American Express processes 284M transactions/year with similar imbalance
-""")
 plt.figure(figsize=(10, 5))
 plt.subplot(1, 2, 1)
 df['Class'].value_counts().plot(kind='bar', color=['green', 'red'])
